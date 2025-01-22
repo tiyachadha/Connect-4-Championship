@@ -10,7 +10,7 @@ import random
 # global BLUE, BLACK, RED, YELLOW, ROW_COUNT, COULMN_COUNT,PLAYER,AI,AI_PIECE,PLAYER_PIECE, WINDOW_LENGTH
 
 BLUE = (0,0,255)
-LIGHT_BLUE = (178,106,215)
+LIGHT_BLUE = (178,106,215,77)
 BLACK = (0,0,0)
 RED = (255,0,0)
 YELLOW =(255,255,0)
@@ -233,17 +233,31 @@ def pick_best_move(board, piece):
          
 
 def drawboard(board):
+
     for c in range(COULMN_COUNT):
         for r in range(ROW_COUNT):
-            pygame.draw.rect(screen, BLUE, (c*SQUARESIZE, r*SQUARESIZE + SQUARESIZE,SQUARESIZE, SQUARESIZE))
-            pygame.draw.circle(screen, BLACK,(int(c*SQUARESIZE + SQUARESIZE/2), int(r*SQUARESIZE + SQUARESIZE + SQUARESIZE/2)), RADIUS)
+            pygame.draw.rect(screen, BLUE, (c*SQUARESIZE, r*SQUARESIZE + SQUARESIZE, SQUARESIZE, SQUARESIZE))
+            pygame.draw.circle(screen, BLACK, (int(c*SQUARESIZE + SQUARESIZE/2), int(r*SQUARESIZE + SQUARESIZE + SQUARESIZE/2)), RADIUS)
 
     for c in range(COULMN_COUNT):
         for r in range(ROW_COUNT):           
             if board[r][c] == PLAYER_PIECE:
-                pygame.draw.circle(screen, RED,(int(c*SQUARESIZE + SQUARESIZE/2), height-int(r*SQUARESIZE + SQUARESIZE/2)), RADIUS)
+                pygame.draw.circle(screen, RED, (int(c*SQUARESIZE + SQUARESIZE/2), height-int(r*SQUARESIZE + SQUARESIZE/2)), RADIUS)
+                pygame.draw.circle(screen, (200, 0, 0), (int(c*SQUARESIZE + SQUARESIZE/2), height-int(r*SQUARESIZE + SQUARESIZE/2)), RADIUS - 5)
             elif board[r][c] == AI_PIECE:
-                pygame.draw.circle(screen, YELLOW,(int(c*SQUARESIZE + SQUARESIZE/2), height-int(r*SQUARESIZE + SQUARESIZE/2)), RADIUS)
+                pygame.draw.circle(screen, YELLOW, (int(c*SQUARESIZE + SQUARESIZE/2), height-int(r*SQUARESIZE + SQUARESIZE/2)), RADIUS)
+                pygame.draw.circle(screen, (200, 200, 0), (int(c*SQUARESIZE + SQUARESIZE/2), height-int(r*SQUARESIZE + SQUARESIZE/2)), RADIUS - 5)
+    # for c in range(COULMN_COUNT):
+    #     for r in range(ROW_COUNT):
+    #         pygame.draw.rect(screen, BLUE, (c*SQUARESIZE, r*SQUARESIZE + SQUARESIZE,SQUARESIZE, SQUARESIZE))
+    #         pygame.draw.circle(screen, BLACK,(int(c*SQUARESIZE + SQUARESIZE/2), int(r*SQUARESIZE + SQUARESIZE + SQUARESIZE/2)), RADIUS)
+
+    # for c in range(COULMN_COUNT):
+    #     for r in range(ROW_COUNT):           
+    #         if board[r][c] == PLAYER_PIECE:
+    #             pygame.draw.circle(screen, RED,(int(c*SQUARESIZE + SQUARESIZE/2), height-int(r*SQUARESIZE + SQUARESIZE/2)), RADIUS)
+    #         elif board[r][c] == AI_PIECE:
+    #             pygame.draw.circle(screen, YELLOW,(int(c*SQUARESIZE + SQUARESIZE/2), height-int(r*SQUARESIZE + SQUARESIZE/2)), RADIUS)
 
     pygame.display.update()
 
@@ -285,6 +299,10 @@ def gameplay(depth_val):
     
     screen = pygame.display.set_mode(size)
     pygame.display.set_caption("Tiya's connect 4")
+
+    highlight_surface = pygame.Surface((SQUARESIZE, height), pygame.SRCALPHA)
+    highlight_surface.fill(LIGHT_BLUE)
+
     drawboard(board)
     pygame.display.update()
 
@@ -303,9 +321,15 @@ def gameplay(depth_val):
             if event.type == pygame.MOUSEMOTION:
                 pygame.draw.rect(screen, BLACK, (0,0, width, SQUARESIZE))
                 posx = event.pos[0]
+                col = int(math.floor(posx/SQUARESIZE))
+
                 if turn == PLAYER:
+                    drawboard(board)
+                    screen.blit(highlight_surface, (col * SQUARESIZE, 0))
+
                     pygame.draw.circle(screen, RED, (posx, int(SQUARESIZE/2)), RADIUS)
-                    #pygame.draw.rect(screen,LIGHT_BLUE, (posx, SQUARESIZE, SQUARESIZE, height)) 
+                    #pygame.draw.rect(screen,LIGHT_BLUE, (posx, SQUARESIZE, SQUARESIZE, height))
+                     
 
             pygame.display.update()
 
